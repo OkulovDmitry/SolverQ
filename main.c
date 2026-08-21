@@ -4,14 +4,13 @@
 #include <float.h>
 #include <assert.h>
 
-#define NO_ROOTS 0
-#define ONE_ROOT 1
-#define TWO_ROOTS 2
-#define INF_ROOTS 3
-#define TRUE 1
-#define FALSE 0
-#define EPSILON 1e-10
+enum number_of_roots {NO_ROOTS, ONE_ROOT, TWO_ROOTS, INF_ROOTS};
+enum boolean {FALSE, TRUE};
 
+#define EPSILON 1e-10
+#define MAX_ACCURACY 10
+
+int turn_on();
 void greeting(double *a_ptr, double *b_ptr, double *c_ptr);
 void clear_buffer();
 int solve(double a_coeff, double b_coeff, double c_coeff, double *x1_ptr, double *x2_ptr);
@@ -22,24 +21,42 @@ double convert_to_zero(double x);
 
 int main()
 {
+    printf("[------------------------------Ultra Solver for quadratic equations by OKD------------------------------]\n");
+    while(turn_on())
+    {
+        double a_coeff = 0, b_coeff = 0, c_coeff = 0;
+        double x1 = 0, x2 = 0;
 
-    double a_coeff = 0, b_coeff = 0, c_coeff = 0;
-    double x1 = 0, x2 = 0;
+        greeting(&a_coeff, &b_coeff, &c_coeff);
 
-    greeting(&a_coeff, &b_coeff, &c_coeff);
+        assert(finite(a_coeff) != 0);
+        assert(finite(b_coeff) != 0);
+        assert(finite(c_coeff) != 0);
 
-    assert(isnan(a_coeff) == 0);
-    assert(isinf(a_coeff) == 0);
-    assert(isnan(b_coeff) == 0);
-    assert(isinf(b_coeff) == 0);
-    assert(isnan(c_coeff) == 0);
-    assert(isinf(c_coeff) == 0);
+        int number_of_roots = solve(a_coeff, b_coeff, c_coeff, &x1, &x2);
 
-    int number_of_roots = solve(a_coeff, b_coeff, c_coeff, &x1, &x2);
+        output(number_of_roots, x1, x2);
+    }
 
-    output(number_of_roots, x1, x2);
+    printf("Thank you");
 
     return 0;
+}
+
+int turn_on()
+{
+    int choice;
+    printf("(0) Stop the programn (1) Solve the quadratic equtation\nEnter your choice: ");
+    while(scanf("%i", &choice) != 1 || (choice != 0 && choice != 1) || check_buffer())
+    {
+        printf("ERROR: Incorrect format\n");
+        printf("Enter choice again:");
+        clear_buffer();
+    }
+
+    assert(finite(choice) != 0);
+
+    return choice;
 }
 
 void greeting(double *a_ptr, double *b_ptr, double *c_ptr)
@@ -48,27 +65,17 @@ void greeting(double *a_ptr, double *b_ptr, double *c_ptr)
     assert(b_ptr != NULL);
     assert(c_ptr != NULL);
 
-    double a_TEMPORARY = 0, b_TEMPORARY = 0, c_TEMPORARY = 0;
-    printf("[------------------------------Ultra Solver for quadratic equations by OKD------------------------------]\n");
     printf("Enter coefficients: ");
-    while (scanf("%lf %lf %lf", &a_TEMPORARY, &b_TEMPORARY, &c_TEMPORARY) != 3 || check_buffer())
+    while (scanf("%lf %lf %lf", &*a_ptr, &*b_ptr, &*c_ptr) != 3 || check_buffer())
     {
         printf("ERROR: Incorrect format\n");
-        printf("Enter coefficients again:");
+        printf("Enter coefficients again: ");
         clear_buffer();
     }
 
-    assert(isnan(a_TEMPORARY) == 0);
-    assert(isnan(b_TEMPORARY) == 0);
-    assert(isnan(c_TEMPORARY) == 0);
-
-    assert(isinf(a_TEMPORARY) == 0);
-    assert(isinf(b_TEMPORARY) == 0);
-    assert(isinf(c_TEMPORARY) == 0);
-
-    *a_ptr = a_TEMPORARY;
-    *b_ptr = b_TEMPORARY;
-    *c_ptr = c_TEMPORARY;
+    assert(finite(*a_ptr) != 0);
+    assert(finite(*a_ptr) != 0);
+    assert(finite(*a_ptr) != 0);
 }
 
 void clear_buffer()
@@ -97,11 +104,6 @@ int solve(double a_coeff, double b_coeff, double c_coeff, double *x1_ptr, double
             double raw_x = -c_coeff/b_coeff;
             *x1_ptr = convert_to_zero(raw_x);
 
-            assert(isnan(raw_x) == 0);
-            assert(isinf(raw_x) == 0);
-            assert(isnan(*x1_ptr) == 0);
-            assert(isinf(*x1_ptr) == 0);
-
             return 1;
         }
     }
@@ -109,26 +111,13 @@ int solve(double a_coeff, double b_coeff, double c_coeff, double *x1_ptr, double
     {
         double discr = b_coeff*b_coeff - 4*a_coeff*c_coeff;
 
-        assert(isnan(discr) == 0);
-        assert(isinf(discr) == 0);
-
         if (compare(discr, 0))
         {
             double raw_x1 = (-b_coeff + sqrt(discr))/(2*a_coeff);
             double raw_x2 = (-b_coeff - sqrt(discr))/(2*a_coeff);
 
-            assert(isnan(raw_x1) == 0);
-            assert(isinf(raw_x1) == 0);
-            assert(isnan(raw_x2) == 0);
-            assert(isinf(raw_x2) == 0);
-
             *x1_ptr = convert_to_zero(raw_x1);
             *x2_ptr = convert_to_zero(raw_x2);
-
-            assert(isnan(*x1_ptr) == 0);
-            assert(isinf(*x1_ptr) == 0);
-            assert(isnan(*x2_ptr) == 0);
-            assert(isinf(*x2_ptr) == 0);
 
             return 2;
         }
@@ -136,13 +125,7 @@ int solve(double a_coeff, double b_coeff, double c_coeff, double *x1_ptr, double
         {
             double raw_x = -b_coeff/(2*a_coeff);
 
-            assert(isnan(raw_x) == 0);
-            assert(isinf(raw_x) == 0);
-
             *x1_ptr = equality_check(raw_x, 0) ? 0 : raw_x;
-
-            assert(isnan(*x1_ptr) == 0);
-            assert(isinf(*x1_ptr) == 0);
 
             return 1;
         }
@@ -155,55 +138,46 @@ int solve(double a_coeff, double b_coeff, double c_coeff, double *x1_ptr, double
 
 int output(int number_of_roots, double x1, double x2)
 {
-    assert(isnan(x1) == 0);
-    assert(isinf(x1) == 0);
-    assert(isnan(x2) == 0);
-    assert(isinf(x2) == 0);
+    assert(finite(x1) != 0);
+    assert(finite(x2) != 0);
 
-    int MAX_ACCURACY = 10;
     switch(number_of_roots)
     {
-        case NO_ROOTS: printf("No roots");
+        case NO_ROOTS: printf("No roots\n");
                 break;
 
-        case ONE_ROOT: printf("This equation has one root: %.*g", MAX_ACCURACY, x1);
+        case ONE_ROOT: printf("This equation has one root: %.*g\n", MAX_ACCURACY, x1);
                 break;
 
-        case TWO_ROOTS: printf("This equation has two roots: %.*g and %.*g", MAX_ACCURACY, x1, MAX_ACCURACY, x2);
+        case TWO_ROOTS: printf("This equation has two roots: %.*g and %.*g\n", MAX_ACCURACY, x1, MAX_ACCURACY, x2);
                 break;
 
-        case INF_ROOTS: printf("This equation has infinite number of roots.");
+        case INF_ROOTS: printf("This equation has infinite number of roots.\n");
                 break;
 
-        default: printf("ERROR: number_of_roots = %i", &number_of_roots);
+        default: printf("ERROR: number_of_roots = %i\n", &number_of_roots);
     }
 }
 
 int compare(double x, double y)
 {
-    assert(isnan(x) == 0);
-    assert(isinf(x) == 0);
-    assert(isnan(y) == 0);
-    assert(isinf(y) == 0);
+    assert(finite(x) != 0);
+    assert(finite(y) != 0);
 
     return (x - y > EPSILON) ? TRUE : FALSE;
 }
 
 int equality_check(double x, double y)
 {
-    assert(isnan(x) == 0);
-    assert(isinf(x) == 0);
-    assert(isnan(y) == 0);
-    assert(isinf(y) == 0);
+    assert(finite(x) != 0);
+    assert(finite(y) != 0);
 
     return (fabs(x - y) <= EPSILON) ? TRUE : FALSE;
 }
 
 double convert_to_zero(double x)
 {
-    assert(isnan(x) == 0);
-    assert(isinf(x) == 0);
-
+    assert(finite(x) != 0);
     return equality_check(x, 0) ? 0 : x;
 }
 
