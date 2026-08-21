@@ -14,6 +14,7 @@ int turn_on();
 void greeting(double coefficients_ptr[]);
 void clear_buffer();
 int solve(double coefficients_ptr[], double roots_ptr[]);
+int solve_linear(double coefficients_ptr[], double roots_ptr[]);
 int output(int number_of_roots, double roots_ptr[]);
 int compare(double x, double y);
 int equality_check(double x, double y);
@@ -29,9 +30,9 @@ int main()
 
         greeting(coefficients);
 
-        assert(finite(coefficients[0]) != 0);
-        assert(finite(coefficients[1]) != 0);
-        assert(finite(coefficients[2]) != 0);
+        assert(finite(coefficients[0]));
+        assert(finite(coefficients[1]));
+        assert(finite(coefficients[2]));
 
         int number_of_roots = solve(coefficients, roots);
 
@@ -71,9 +72,9 @@ void greeting(double coefficients_ptr[])
         clear_buffer();
     }
 
-    assert(finite(coefficients_ptr[0]) != 0);
-    assert(finite(coefficients_ptr[1]) != 0);
-    assert(finite(coefficients_ptr[2]) != 0);
+    assert(finite(coefficients_ptr[0]));
+    assert(finite(coefficients_ptr[1]));
+    assert(finite(coefficients_ptr[2]));
 }
 
 void clear_buffer()
@@ -92,17 +93,7 @@ int solve(double coefficients_ptr[], double roots_ptr[])
 
     if (equality_check(coefficients_ptr[0], 0))
     {
-        if (equality_check(coefficients_ptr[1], 0))
-        {
-            return (equality_check(coefficients_ptr[2], 0)) ? INF_ROOTS : NO_ROOTS;
-        }
-        else
-        {
-            double raw_x = -coefficients_ptr[2]/coefficients_ptr[1];
-            roots_ptr[0] = convert_to_zero(raw_x);
-
-            return 1;
-        }
+        solve_linear(coefficients_ptr, roots_ptr);
     }
     else
     {
@@ -133,10 +124,25 @@ int solve(double coefficients_ptr[], double roots_ptr[])
     }
 }
 
+int solve_linear(double coefficients_ptr[],double roots_ptr[])
+{
+    if (equality_check(coefficients_ptr[1], 0))
+    {
+        return (equality_check(coefficients_ptr[2], 0)) ? INF_ROOTS : NO_ROOTS;
+    }
+    else
+    {
+        double raw_x = -coefficients_ptr[2]/coefficients_ptr[1];
+        roots_ptr[0] = convert_to_zero(raw_x);
+
+        return 1;
+    }
+}
+
 int output(int number_of_roots, double roots_ptr[])
 {
-    assert(finite(roots_ptr[0]) != 0);
-    assert(finite(roots_ptr[1]) != 0);
+    assert(finite(roots_ptr[0]));
+    assert(finite(roots_ptr[1]));
 
     switch(number_of_roots)
     {
@@ -158,23 +164,23 @@ int output(int number_of_roots, double roots_ptr[])
 
 int compare(double x, double y)
 {
-    assert(finite(x) != 0);
-    assert(finite(y) != 0);
+    assert(finite(x));
+    assert(finite(y));
 
     return (x - y > EPSILON) ? TRUE : FALSE;
 }
 
 int equality_check(double x, double y)
 {
-    assert(finite(x) != 0);
-    assert(finite(y) != 0);
+    assert(finite(x));
+    assert(finite(y));
 
     return (fabs(x - y) <= EPSILON) ? TRUE : FALSE;
 }
 
 double convert_to_zero(double x)
 {
-    assert(finite(x) != 0);
+    assert(finite(x));
     return equality_check(x, 0) ? 0 : x;
 }
 
