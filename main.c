@@ -1,3 +1,18 @@
+// –¿«Œ¡–¿“‹—ﬂ — ¿——≈–“¿Ã»
+//
+//
+//
+//
+//
+//
+//
+//\
+//
+//
+//
+//
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -17,8 +32,15 @@ struct Quadratic_equation_param
     int number_of_roots;
 };
 
-//void run_tests();
-//int run_one_test();
+struct Test_param
+{
+    double test_coefficients[3];
+    double test_roots[2];
+    int test_number_of_roots;
+};
+
+void run_tests();
+int run_one_test(struct Test_param *test_parameters_ptr);
 int turn_on();
 void greeting(struct Quadratic_equation_param *parameters_ptr);
 void clear_buffer();
@@ -35,11 +57,11 @@ int main()
 {
     printf("[------------------------------Ultra Solver for quadratic equations by OKD------------------------------]\n");
 
-    //run_tests();
+    run_tests();
 
     while(turn_on())
     {
-        struct Quadratic_equation_param parameters= {0};;
+        struct Quadratic_equation_param parameters = {0};
 
         greeting(&parameters);
 
@@ -57,7 +79,7 @@ int main()
     return 0;
 }
 
-/*void run_tests()
+void run_tests()
 {
     char test_choice = 'n';
 
@@ -71,17 +93,29 @@ int main()
 
     if (test_choice == 'y')
     {
-        run_one_test({1, 2, 1}, {-1, NAN});
+        struct Test_param test_parameters = {{1, 2, 1}, 1, {-1, NAN}};
+        run_one_test(&test_parameters);
+
     }
 }
 
-int run_one_test(double a, double b, double c, int  double x1_test,  double x2_test)
+int run_one_test(struct Test_param *test_parameters_ptr)
 {
-    double test_coefficients[3] = {a, b, c};
-    double test_roots[2] = {x1_test, x2_test};
+    assert(test_parameters_ptr != NULL && "ERROR");
 
+    struct Quadratic_equation_param prog_test_parameters = {*(test_parameters_ptr->test_coefficients), 0, {0, NAN}};
 
-}*/
+    if (solve(&prog_test_parameters) == (test_parameters_ptr->test_number_of_roots))
+    {
+        printf("Test 1 OK\n");
+    }
+    else
+    {
+        printf("%i", &prog_test_parameters);
+        printf("ERROR\n");
+    }
+
+}
 
 int turn_on()
 {
@@ -133,6 +167,7 @@ int check_buffer()
 
 int solve(struct Quadratic_equation_param *parameters_ptr)
 {
+    //error
     assert(&parameters_ptr->coefficients != NULL);
     assert(&parameters_ptr->roots != NULL);
     assert(&parameters_ptr->number_of_roots != NULL);
