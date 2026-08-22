@@ -32,15 +32,13 @@ struct Quadratic_equation_param
     int number_of_roots;
 };
 
-struct Test_param
-{
-    double test_coefficients[3];
-    double test_roots[2];
-    int test_number_of_roots;
-};
-
 void run_tests();
-int run_one_test(struct Test_param *test_parameters_ptr);
+void run_one_test(double test_coeff1,
+                 double test_coeff2,
+                 double test_coeff3,
+                 double test_number_of_roots,
+                 double test_root1,
+                 double test_root2);
 int turn_on();
 void greeting(struct Quadratic_equation_param *parameters_ptr);
 void clear_buffer();
@@ -93,28 +91,51 @@ void run_tests()
 
     if (test_choice == 'y')
     {
-        struct Test_param test_parameters = {{1, 2, 1}, 1, {-1, NAN}};
-        run_one_test(&test_parameters);
+        run_one_test(1, 2, 1, 1, -1, NAN);
 
     }
 }
 
-int run_one_test(struct Test_param *test_parameters_ptr)
+void run_one_test(double test_coeff1,
+                 double test_coeff2,
+                 double test_coeff3,
+                 double test_number_of_roots,
+                 double test_root1,
+                 double test_root2)
 {
-    assert(test_parameters_ptr != NULL && "ERROR");
+    assert(finite(test_coeff1) != 0 && "ERROR");
+    assert(finite(test_coeff2) != 0 && "ERROR");
+    assert(finite(test_coeff3) != 0 && "ERROR");
 
-    struct Quadratic_equation_param prog_test_parameters = {*(test_parameters_ptr->test_coefficients), 0, {0, NAN}};
+    struct Quadratic_equation_param test_parameters = {{test_coeff1, test_coeff2, test_coeff3}, 0, {0, 0}};
 
-    if (solve(&prog_test_parameters) == (test_parameters_ptr->test_number_of_roots))
+    solve(&test_parameters);
+
+    if (test_parameters.number_of_roots == 0) //еще раз доказать понимание адресов и указателей для структур
     {
-        printf("Test 1 OK\n");
+        if (test_parameters.number_of_roots == test_number_of_roots)
+        {
+            printf("Test 1 OK\n"); return;
+        }
     }
-    else
+    if (test_parameters.number_of_roots == 1)
     {
-        printf("%i", &prog_test_parameters);
-        printf("ERROR\n");
+        if (test_parameters.number_of_roots == test_number_of_roots && equality_check(test_parameters.roots[0], test_root1))
+        {
+            printf("Test 1 OK\n"); return;
+        }
+    }
+    if (test_parameters.number_of_roots == 2)
+    {
+        if (test_parameters.number_of_roots == test_number_of_roots && equality_check(test_parameters.roots[0], test_root1)
+                                                                    && equality_check(test_parameters.roots[1], test_root2))
+        {
+            printf("Test 1 OK\n"); return;
+        }
     }
 
+    printf("%i %lg %lg\n", test_parameters.number_of_roots, test_parameters.roots[0], test_parameters.roots[1]);
+    printf("ERROR\n");
 }
 
 int turn_on()
@@ -199,19 +220,23 @@ int solve_not_linear(struct Quadratic_equation_param *parameters_ptr)
 
             (parameters_ptr->roots)[0] = convert_to_zero(raw_x1);
             (parameters_ptr->roots)[1] = convert_to_zero(raw_x2);
+             parameters_ptr->number_of_roots = TWO_ROOTS;
 
-            return 2;
+            return TWO_ROOTS;
         }
         else if (equality_check(discr, 0))
         {
             double raw_x = -(parameters_ptr->coefficients)[1]/(2*(parameters_ptr->coefficients)[0]);
 
             (parameters_ptr->roots)[0] = equality_check(raw_x, 0) ? 0 : raw_x;
+             parameters_ptr->number_of_roots = ONE_ROOT;
 
-            return 1;
+            return ONE_ROOT;
         }
         else
         {
+            parameters_ptr->number_of_roots = NO_ROOTS;
+
             return NO_ROOTS;
         }
 }
@@ -224,14 +249,18 @@ int solve_linear(struct Quadratic_equation_param *parameters_ptr)
 
     if (equality_check((parameters_ptr->coefficients)[1], 0))
     {
+        parameters_ptr->number_of_roots = (equality_check((parameters_ptr->coefficients)[2], 0)) ? INF_ROOTS : NO_ROOTS;
+
         return (equality_check((parameters_ptr->coefficients)[2], 0)) ? INF_ROOTS : NO_ROOTS;
     }
     else
     {
         double raw_x = -(parameters_ptr->coefficients)[2]/(parameters_ptr->coefficients)[1];
-        (parameters_ptr->roots)[0] = convert_to_zero(raw_x);
 
-        return 1;
+        (parameters_ptr->roots)[0] = convert_to_zero(raw_x);
+         parameters_ptr->number_of_roots = ONE_ROOT;
+
+        return ONE_ROOT;
     }
 }
 
@@ -262,7 +291,7 @@ int output(struct Quadratic_equation_param *parameters_ptr)
     }
 }
 
-int compare(double x, double y)
+int compare(double x, double y) //какое из чисел больше
 {
     assert(finite(x));
     assert(finite(y));
@@ -270,7 +299,7 @@ int compare(double x, double y)
     return (x - y > EPSILON) ? TRUE : FALSE;
 }
 
-int equality_check(double x, double y)
+int equality_check(double x, double y) //равны ли 2 числа
 {
     assert(finite(x));
     assert(finite(y));
