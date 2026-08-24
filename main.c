@@ -12,7 +12,7 @@
 
 int main()
 {
-    printf("[------------------------------Ultra Solver for quadratic equations by OKD------------------------------]\n");
+    printf("======================================\nUltra Solver for quadratic equations by OKD\n======================================\n");
 
     run_tests();
 
@@ -27,9 +27,9 @@ int main()
 
         //fprintf(stderr, "I WAS HERE\n");
 
-        assert(finite((parameters.coefficients)[0]) && "ERROR");
-        assert(finite((parameters.coefficients[1])) && "ERROR");
-        assert(finite((parameters.coefficients[2])) && "ERROR");
+        assert(isfinite((parameters.coefficients)[0]) && "ERROR");
+        assert(isfinite((parameters.coefficients[1])) && "ERROR");
+        assert(isfinite((parameters.coefficients[2])) && "ERROR");
 
         parameters.number_of_roots = solve(&parameters);
 

@@ -29,10 +29,15 @@ void greeting(struct Quadratic_equation_param *parameters_ptr)
     assert(&parameters_ptr->roots != NULL && "ERROR");
     assert(&parameters_ptr->number_of_roots != NULL && "ERROR");
 
+    printf("Please enter the coefficients (a, b, c) separated by spaces. Do not a trailing space at the end.\n");
+
     printf("Enter coefficients: ");
     while (scanf("%lg %lg %lg", &(parameters_ptr->coefficients)[0],
                                 &(parameters_ptr->coefficients)[1],
-                                &(parameters_ptr->coefficients)[2]) != 3 || check_buffer())
+                                &(parameters_ptr->coefficients)[2]) != 3 || !(isfinite(parameters_ptr->coefficients[0]))
+                                                                         || !(isfinite(parameters_ptr->coefficients[1]))
+                                                                         || !(isfinite(parameters_ptr->coefficients[2]))
+                                                                         || check_buffer())
     {
         printf("ERROR: Incorrect format\n");
         printf("Enter coefficients again: ");
