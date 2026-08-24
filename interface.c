@@ -3,6 +3,7 @@
 #include <math.h>
 #include <float.h>
 #include <assert.h>
+#include <stddef.h>
 #include "interface.h"
 
 int turn_on()

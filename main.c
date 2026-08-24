@@ -4,6 +4,7 @@
 #include <math.h>
 #include <float.h>
 #include <assert.h>
+#include <stddef.h>
 #include "unit_tests.h"
 #include "buffer_operations.h"
 #include "double_utills.h"
@@ -18,14 +19,9 @@ int main()
 
     while(turn_on())
     {
-        //fprintf(stderr, "I WAS HERE\n");
         struct Quadratic_equation_param parameters = {0};
 
-        //fprintf(stderr, "I WAS HERE\n");
-
         greeting(&parameters);
-
-        //fprintf(stderr, "I WAS HERE\n");
 
         assert(isfinite((parameters.coefficients)[0]) && "ERROR");
         assert(isfinite((parameters.coefficients[1])) && "ERROR");

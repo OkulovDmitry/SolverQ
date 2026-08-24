@@ -3,6 +3,7 @@
 #include <math.h>
 #include <float.h>
 #include <assert.h>
+#include <stddef.h>
 #include "buffer_operations.h"
 
 void clear_buffer()

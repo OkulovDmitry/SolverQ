@@ -3,7 +3,7 @@
 #include <math.h>
 #include <float.h>
 #include <assert.h>
-
+#include <stddef.h>
 #include "solve_quadratic.h"
 
 int solve(struct Quadratic_equation_param *parameters_ptr)

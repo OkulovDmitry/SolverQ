@@ -3,6 +3,7 @@
 #include <math.h>
 #include <float.h>
 #include <assert.h>
+#include <stddef.h>
 #include "double_utills.h"
 
 int compare(double x, double y) //return TRUE if x>y
