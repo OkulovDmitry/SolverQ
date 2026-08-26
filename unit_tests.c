@@ -7,7 +7,7 @@
 #include <stddef.h>
 #include "unit_tests.h"
 
-void run_tests()
+void run_tests(void)
 {
     char test_choice = 'n';
 
@@ -144,7 +144,7 @@ void run_one_test(struct Quadratic_equation_param *test_1_ptr)
     printf("===================================================================================\n");
 }
 
-void remorse()
+void remorse(void)
 {
     printf("Yout test are wrong!!! REPENT: ");
     char REMORSE[1000];

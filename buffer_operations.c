@@ -1,38 +1,38 @@
 #include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <math.h>
-#include <float.h>
 #include <assert.h>
-#include <stddef.h>
 #include "buffer_operations.h"
 
-void clear_buffer()
+void clear_buffer(void)
 {
-    while(getchar() != '\n');
+    int buffer = 0;
+    while((buffer = getchar()) != '\n' && buffer != EOF);
 }
 
 void clear_file_buffer(FILE *unit_tests_file_ptr)
 {
-    char s = 'q';
-    s = fgetc(unit_tests_file_ptr);
-    while(s != '\n') {s = fgetc(unit_tests_file_ptr);};
+    assert(unit_tests_file_ptr != NULL && "ERROR: File pointer is NULL");
+    int buffer = 0;
+    while((buffer = fgetc(unit_tests_file_ptr)) != '\n' && buffer != EOF);
 }
 
-int check_buffer()
+int check_buffer(void)
 {
-    char buffer = getchar();
-    return (buffer != '\n') ? TRUE : FALSE;
+    int buffer = getchar();
+    if (buffer == '\n' || buffer == EOF) {return FALSE;}
+    ungetc(buffer, stdin);
+    return TRUE;
 }
 
 int is_file_buffer_empty(FILE *unit_tests_file_ptr)
 {
+    assert(unit_tests_file_ptr != NULL && "ERROR: File pointer is NULL");
     char file_buffer = fgetc(unit_tests_file_ptr);
     return (file_buffer == '\n') ? TRUE : FALSE;
 }
 
 int is_file_end(FILE *unit_tests_file_ptr)
 {
+    assert(unit_tests_file_ptr != NULL && "ERROR: File pointer is NULL");
     char file_buffer = fgetc(unit_tests_file_ptr);
     return (file_buffer == EOF) ? TRUE : FALSE;
 }
