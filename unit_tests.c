@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 #include <math.h>
 #include <float.h>
@@ -22,38 +23,60 @@ void run_tests()
 
     if (test_choice == 'y')
     {
-        struct Quadratic_equation_param unit_test_keys[19] = {
-            // D > 0
-            {.coefficients = {1, -5, 6}, .roots = {2, 3}, .number_of_roots = TWO_ROOTS},
-            {.coefficients = {1, -2, -3}, .roots = {-1, 3}, .number_of_roots = TWO_ROOTS},
-            {.coefficients = {2, 5, -3}, .roots = {-3, 0.5}, .number_of_roots = TWO_ROOTS},
-            {.coefficients = {1, -6, 8}, .roots = {4, 2}, .number_of_roots = TWO_ROOTS},
-            {.coefficients = {-1, 3, 4}, .roots = {4, -1}, .number_of_roots = TWO_ROOTS},
-            // D = 0, передавать NAN вторым в массиве roots
-            {.coefficients = {1, -4, 4}, .roots = {2, NAN}, .number_of_roots = 1},
-            {.coefficients = {1.6, 4, 2.5}, .roots = {-1.25, NAN}, .number_of_roots = ONE_ROOT},
-            {.coefficients = {0.16, -0.8, 1}, .roots = {2.5, NAN}, .number_of_roots = ONE_ROOT},
-            {.coefficients = {0.2, 1.2, 1.8}, .roots = {-3, NAN}, .number_of_roots = ONE_ROOT},
-            {.coefficients = {0.8, -4, 5}, .roots = {2.5, NAN}, .number_of_roots = ONE_ROOT},
-            // D < 0
-            {.coefficients = {1.4, 1.5, 2.1}, .roots = {NAN, NAN}, .number_of_roots = NO_ROOTS},
-            {.coefficients = {0.6, -0.8, 1.3}, .roots = {NAN, NAN}, .number_of_roots = NO_ROOTS},
-            {.coefficients = {2.2, 3.1, 1.5}, .roots = {NAN, NAN}, .number_of_roots = NO_ROOTS},
-            {.coefficients = {0.5, -0.2, 0.8}, .roots = {NAN, NAN}, .number_of_roots = NO_ROOTS},
-            {.coefficients = {1.1, 0.5, 0.9}, .roots = {NAN, NAN}, .number_of_roots = NO_ROOTS},
-            // linear
-            {.coefficients = {0, 1.5, -4.2}, .roots = {2.8, NAN}, .number_of_roots = ONE_ROOT},
-            {.coefficients = {0, 2.4, 0.6}, .roots = {-0.25, NAN}, .number_of_roots = ONE_ROOT},
-            // inf
-            {.coefficients = {0, 0, 0}, .roots = {NAN, NAN}, .number_of_roots = INF_ROOTS},
-            // linear no roots
-            {.coefficients = {0, 0, 5.2}, .roots = {NAN, NAN}, .number_of_roots = NO_ROOTS}
-        };
+        FILE *unit_tests_file = fopen("unit_test_keys.txt", "r");
+        assert(unit_tests_file != NULL);
 
-        for (int i = 0; i < NUMBER_OF_UNIT_TESTS; i++)
+        struct Quadratic_equation_param unit_test_key; char roots_status_str[10];
+
+        while(fscanf(unit_tests_file, "%lg %lg %lg %lg %lg %s", &unit_test_key.coefficients[0],
+                                                &unit_test_key.coefficients[1],
+                                                &unit_test_key.coefficients[2],
+                                                &unit_test_key.roots[0],
+                                                &unit_test_key.roots[1],
+                                                roots_status_str) == 6)
         {
-            run_one_test(&unit_test_keys[i]);
+
+            if (strcmp(roots_status_str,"NO_ROOTS") == 1 &&
+                strcmp(roots_status_str,"ONE_ROOT") == 1 &&
+                strcmp(roots_status_str,"TWO_ROOTS") == 1 &&
+                strcmp(roots_status_str,"INF_ROOTS") == 1) 
+            {
+                remorse();
+            }
+
+            if (is_file_buffer_empty(unit_tests_file) == FALSE)
+            {
+                remorse();
+            }
+
+            assert(roots_status_str != NULL);
+
+            if (strcmp(roots_status_str,"NO_ROOTS") == 0) {unit_test_key.number_of_roots = NO_ROOTS;}
+            else if (strcmp(roots_status_str, "ONE_ROOT") == 0) {unit_test_key.number_of_roots = ONE_ROOT;}
+            else if (strcmp(roots_status_str, "TWO_ROOTS") == 0) {unit_test_key.number_of_roots = TWO_ROOTS;}
+            else if (strcmp(roots_status_str, "INF_ROOTS") == 0) {unit_test_key.number_of_roots = INF_ROOTS;}
+
+            run_one_test(&unit_test_key);
+
+            fseek(unit_tests_file, -1, SEEK_CUR);
+            clear_file_buffer(unit_tests_file);
+
+            if (is_file_end(unit_tests_file))
+            {
+                break;
+            }
+            else
+            {
+                fseek(unit_tests_file, -1, SEEK_CUR);
+            }
         }
+
+        if (!(is_file_end(unit_tests_file)))
+        {
+            remorse();
+        }
+
+        fclose(unit_tests_file);
     }
 }
 
@@ -119,4 +142,12 @@ void run_one_test(struct Quadratic_equation_param *test_1_ptr)
     printf("Expected values:%i - number of roots %lg %lg - roots\n", test_number_of_roots, test_root_1, test_root_2);
     printf("Program values:%i - number of roots %lg %lg - roots\n", test_1_ptr->number_of_roots, test_1_ptr->roots[0], test_1_ptr->roots[1]);
     printf("===================================================================================\n");
+}
+
+void remorse()
+{
+    printf("Yout test are wrong!!! REPENT: ");
+    char REMORSE[1000];
+    scanf("%s", REMORSE);
+    exit(1);
 }
