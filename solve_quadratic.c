@@ -1,18 +1,12 @@
 #include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <math.h>
 #include <float.h>
+#include <math.h>
 #include <assert.h>
-#include <stddef.h>
 #include "solve_quadratic.h"
 
 int solve(struct Quadratic_equation_param *parameters_ptr)
 {
-    //error
-    assert(&parameters_ptr->coefficients != NULL);
-    assert(&parameters_ptr->roots != NULL);
-    assert(&parameters_ptr->number_of_roots != NULL);
+    assert(parameters_ptr != NULL && "ERROR: parameters_ptr in solve is NULL");
 
     if (equality_check((parameters_ptr->coefficients)[0], 0))
     {
@@ -26,9 +20,7 @@ int solve(struct Quadratic_equation_param *parameters_ptr)
 
 int solve_not_linear(struct Quadratic_equation_param *parameters_ptr)
 {
-    assert(&parameters_ptr->coefficients != NULL);
-    assert(&parameters_ptr->roots != NULL);
-    assert(&parameters_ptr->number_of_roots != NULL);
+    assert(parameters_ptr != NULL && "ERROR: parameters_ptr in solve_not_linear is NULL");
 
     double discr = (parameters_ptr->coefficients)[1]*(parameters_ptr->coefficients)[1] - 4*(parameters_ptr->coefficients)[0]*(parameters_ptr->coefficients)[2];
 
@@ -37,8 +29,8 @@ int solve_not_linear(struct Quadratic_equation_param *parameters_ptr)
             double raw_x1 = (-(parameters_ptr->coefficients)[1] - sqrt(discr))/(2*(parameters_ptr->coefficients)[0]);
             double raw_x2 = (-(parameters_ptr->coefficients)[1] + sqrt(discr))/(2*(parameters_ptr->coefficients)[0]);
 
-            (parameters_ptr->roots)[0] = convert_to_zero(raw_x1);
-            (parameters_ptr->roots)[1] = convert_to_zero(raw_x2);
+            (parameters_ptr->roots)[0] = convert_minus_zero_to_zero(raw_x1);
+            (parameters_ptr->roots)[1] = convert_minus_zero_to_zero(raw_x2);
 
             if(compare((parameters_ptr->roots)[0], (parameters_ptr->roots)[1]))
             {
@@ -70,9 +62,7 @@ int solve_not_linear(struct Quadratic_equation_param *parameters_ptr)
 
 int solve_linear(struct Quadratic_equation_param *parameters_ptr)
 {
-    assert(&parameters_ptr->coefficients != NULL);
-    assert(&parameters_ptr->roots != NULL);
-    assert(&parameters_ptr->number_of_roots != NULL);
+    assert(parameters_ptr != NULL && "ERROR: parameters_ptr in solve_linear is NULL");
 
     if (equality_check((parameters_ptr->coefficients)[1], 0))
     {
@@ -84,7 +74,7 @@ int solve_linear(struct Quadratic_equation_param *parameters_ptr)
     {
         double raw_x = -(parameters_ptr->coefficients)[2]/(parameters_ptr->coefficients)[1];
 
-        (parameters_ptr->roots)[0] = convert_to_zero(raw_x);
+        (parameters_ptr->roots)[0] = convert_minus_zero_to_zero(raw_x);
          parameters_ptr->number_of_roots = ONE_ROOT;
 
         return ONE_ROOT;

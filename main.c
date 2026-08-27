@@ -1,16 +1,16 @@
 #include <stdio.h>
-
+#include <string.h>
 #include "unit_tests.h"
 #include "buffer_operations.h"
 #include "double_utils.h"
 #include "solve_quadratic.h"
 #include "interface.h"
 
-int main(void)
+int main(int argc, char *argv[])
 {
-    printf("======================================\nUltra Solver for quadratic equations by OKD\n======================================\n");
+    if (argc > 1) {is_run_tests(argv[1]);}
 
-    run_tests();
+    printf("======================================\nUltra Solver for quadratic equations by OKD\n======================================\n");
 
     while(turn_on())
     {
