@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
 
     printf("======================================\nUltra Solver for quadratic equations by OKD\n======================================\n");
 
-    while(turn_on())
+    while (turn_on())
     {
         struct Quadratic_equation_param parameters = {0};
 

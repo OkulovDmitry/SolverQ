@@ -8,6 +8,8 @@
 #include "solve_quadratic.h"
 #include "interface.h"
 #include "buffer_operations.h"
+#include "my_assert_isfinite.h"
+#include "my_assert_null.h"
 
 int turn_on(void)
 {
@@ -25,7 +27,7 @@ int turn_on(void)
 
 void greeting(struct Quadratic_equation_param *parameters_ptr)
 {
-    assert(parameters_ptr != NULL && "ERROR: parameters_ptr in greeting is NULL");
+    assert_null(parameters_ptr, "parameters_ptr");
 
     printf("Please enter the coefficients (a, b, c) separated by spaces. Do not enter a trailing space at the end.\n");
 
@@ -44,9 +46,9 @@ void greeting(struct Quadratic_equation_param *parameters_ptr)
 
 }
 
-int output(const struct Quadratic_equation_param *parameters_ptr)
+void output(const struct Quadratic_equation_param *parameters_ptr)
 {
-    assert(parameters_ptr != NULL && "ERROR: parameters_ptr in output is NULL");
+    assert_null(parameters_ptr, "parameters_ptr");
 
     switch(parameters_ptr->number_of_roots)
     {
@@ -55,13 +57,13 @@ int output(const struct Quadratic_equation_param *parameters_ptr)
             break;
 
         case ONE_ROOT: 
-            assert(isfinite((parameters_ptr->roots)[0])); 
+            assert_isfinite((parameters_ptr->roots)[0], "(parameters_ptr->roots)[0]"); 
             printf("This equation has one root: %.*g\n", MAX_ACCURACY, (parameters_ptr->roots)[0]);
             break;
 
         case TWO_ROOTS: 
-            assert(isfinite((parameters_ptr->roots)[0])); 
-            assert(isfinite((parameters_ptr->roots)[1]));
+            assert_isfinite((parameters_ptr->roots)[0], "(parameters_ptr->roots)[0]");
+            assert_isfinite((parameters_ptr->roots)[1], "(parameters_ptr->roots)[1]");
             printf("This equation has two roots: %.*g and %.*g\n", MAX_ACCURACY, 
                                             (parameters_ptr->roots)[0], 
                                             MAX_ACCURACY, 
@@ -74,6 +76,4 @@ int output(const struct Quadratic_equation_param *parameters_ptr)
 
         default: printf("ERROR: number_of_roots = %i\n", parameters_ptr->number_of_roots);
     }
-
-    return 1;
 }

@@ -3,10 +3,11 @@
 #include <math.h>
 #include <assert.h>
 #include "solve_quadratic.h"
+#include "my_assert_null.h"
 
 int solve(struct Quadratic_equation_param *parameters_ptr)
 {
-    assert(parameters_ptr != NULL && "ERROR: parameters_ptr in solve is NULL");
+    assert_null(parameters_ptr, "parameters_ptr");
 
     if (equality_check((parameters_ptr->coefficients)[0], 0))
     {
@@ -20,54 +21,54 @@ int solve(struct Quadratic_equation_param *parameters_ptr)
 
 int solve_not_linear(struct Quadratic_equation_param *parameters_ptr)
 {
-    assert(parameters_ptr != NULL && "ERROR: parameters_ptr in solve_not_linear is NULL");
+    assert_null(parameters_ptr, "parameters_ptr");
 
     double discr = (parameters_ptr->coefficients)[1]*(parameters_ptr->coefficients)[1] - 4*(parameters_ptr->coefficients)[0]*(parameters_ptr->coefficients)[2];
 
-        if (compare(discr, 0))
+    if (is_greater(discr, 0))
+    {
+        double raw_x1 = (-(parameters_ptr->coefficients)[1] - sqrt(discr))/(2*(parameters_ptr->coefficients)[0]);
+        double raw_x2 = (-(parameters_ptr->coefficients)[1] + sqrt(discr))/(2*(parameters_ptr->coefficients)[0]);
+
+        (parameters_ptr->roots)[0] = convert_minus_zero_to_zero(raw_x1);
+        (parameters_ptr->roots)[1] = convert_minus_zero_to_zero(raw_x2);
+
+        if(is_greater((parameters_ptr->roots)[0], (parameters_ptr->roots)[1]))
         {
-            double raw_x1 = (-(parameters_ptr->coefficients)[1] - sqrt(discr))/(2*(parameters_ptr->coefficients)[0]);
-            double raw_x2 = (-(parameters_ptr->coefficients)[1] + sqrt(discr))/(2*(parameters_ptr->coefficients)[0]);
-
-            (parameters_ptr->roots)[0] = convert_minus_zero_to_zero(raw_x1);
-            (parameters_ptr->roots)[1] = convert_minus_zero_to_zero(raw_x2);
-
-            if(compare((parameters_ptr->roots)[0], (parameters_ptr->roots)[1]))
-            {
-                swap(&(parameters_ptr->roots)[0], &(parameters_ptr->roots)[1]);
-            }
-            //now (parameters_ptr->roots)[0] < (parameters_ptr->roots)[1]
-
-             parameters_ptr->number_of_roots = TWO_ROOTS;
-
-            return TWO_ROOTS;
+            swap(&(parameters_ptr->roots)[0], &(parameters_ptr->roots)[1]);
         }
-        else if (equality_check(discr, 0))
-        {
-            double raw_x = -(parameters_ptr->coefficients)[1]/(2*(parameters_ptr->coefficients)[0]);
+        //now (parameters_ptr->roots)[0] < (parameters_ptr->roots)[1]
 
-            (parameters_ptr->roots)[0] = equality_check(raw_x, 0) ? 0 : raw_x;
-            (parameters_ptr->roots)[1] = equality_check(raw_x, 0) ? 0 : raw_x;
-             parameters_ptr->number_of_roots = ONE_ROOT;
+         parameters_ptr->number_of_roots = TWO_ROOTS;
 
-            return ONE_ROOT;
-        }
-        else
-        {
-            parameters_ptr->number_of_roots = NO_ROOTS;
+        return TWO_ROOTS;
+    }
+    else if (equality_check(discr, 0))
+    {
+        double raw_x = -(parameters_ptr->coefficients)[1]/(2*(parameters_ptr->coefficients)[0]);
 
-            return NO_ROOTS;
-        }
+        (parameters_ptr->roots)[0] = equality_check(raw_x, 0) ? 0 : raw_x;
+        (parameters_ptr->roots)[1] = equality_check(raw_x, 0) ? 0 : raw_x;
+            parameters_ptr->number_of_roots = ONE_ROOT;
+
+        return ONE_ROOT;
+    }
+    else
+    {
+        parameters_ptr->number_of_roots = NO_ROOTS;
+
+        return NO_ROOTS;
+    }
 }
 
 int solve_linear(struct Quadratic_equation_param *parameters_ptr)
 {
-    assert(parameters_ptr != NULL && "ERROR: parameters_ptr in solve_linear is NULL");
+    assert_null(parameters_ptr, "parameters_ptr");
 
     if (equality_check((parameters_ptr->coefficients)[1], 0))
     {
-        parameters_ptr->number_of_roots = (equality_check((parameters_ptr->coefficients)[2], 0)) ? INF_ROOTS : NO_ROOTS;
-
+        if (equality_check((parameters_ptr->coefficients)[2], 0)) { parameters_ptr->number_of_roots = INF_ROOTS;}
+        else { parameters_ptr->number_of_roots = NO_ROOTS;}
         return (equality_check((parameters_ptr->coefficients)[2], 0)) ? INF_ROOTS : NO_ROOTS;
     }
     else
