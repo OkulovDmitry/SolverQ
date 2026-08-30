@@ -1,3 +1,10 @@
+/**
+ * \file main.c
+ * \brief This program solves linear and quadratic equations and runs unit tests.
+ * @param argc The number of command-line arguments. / [RU] Количество аргументов командной строки.
+ * @param argv An array of command-line argument strings. / [RU] Массив строк аргументов командной строки.
+ * @return int Returns 0 on success, or an error code on failure. [RU] Возвращает 0 в случае успеха или код ошибки при сбое.
+ */
 #include <stdio.h>
 #include <string.h>
 #include "unit_tests.h"

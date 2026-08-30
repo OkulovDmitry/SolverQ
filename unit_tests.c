@@ -51,7 +51,7 @@ void run_tests(void)
         assert_null(roots_status_str, "roots_status_str");
 
         test_number_of_roots_initialization(roots_status_str, &unit_test_key.number_of_roots);
-        run_one_test(NUMBER_OF_TESTS, &unit_test_key, NUMBER_OF_TESTS);
+        run_one_test(NUMBER_OF_TESTS, &unit_test_key);
         clear_file_buffer(unit_tests_file);
 
         if (is_file_end(unit_tests_file)){ break;}
@@ -121,7 +121,7 @@ void test_number_of_roots_initialization(char roots_status_str[], int *number_of
     else if (strcmp(roots_status_str, "INF_ROOTS") == 0) {*number_of_roots_ptr = INF_ROOTS;}
 }
 
-void run_one_test(const int NUMBER_OF_TESTS, struct Quadratic_equation_param *test_1_ptr, int NUMBER_OF_TESTS_cp)
+void run_one_test(const int NUMBER_OF_TESTS, struct Quadratic_equation_param *test_1_ptr)
 {
     assert_null(test_1_ptr, "test_1_ptr");
 
@@ -139,7 +139,7 @@ void run_one_test(const int NUMBER_OF_TESTS, struct Quadratic_equation_param *te
     {
         if (test_1_ptr->number_of_roots == test_number_of_roots)
         {
-            printf("%i test no roots type OK\n", NUMBER_OF_TESTS_cp); return;
+            printf("%i test no roots type OK\n", NUMBER_OF_TESTS); return;
         }
     }
     if (test_1_ptr->number_of_roots == ONE_ROOT)
@@ -149,7 +149,7 @@ void run_one_test(const int NUMBER_OF_TESTS, struct Quadratic_equation_param *te
 
         if (test_1_ptr->number_of_roots == test_number_of_roots && equality_check((test_1_ptr->roots)[0], test_root_1))
         {
-            printf("%i test one root type OK\n", NUMBER_OF_TESTS_cp); return;
+            printf("%i test one root type OK\n", NUMBER_OF_TESTS); return;
         }
     }
     if (test_1_ptr->number_of_roots == TWO_ROOTS)
@@ -163,14 +163,14 @@ void run_one_test(const int NUMBER_OF_TESTS, struct Quadratic_equation_param *te
         if (test_1_ptr->number_of_roots == test_number_of_roots && equality_check(test_1_ptr->roots[0], test_root_1)
                                                                 && equality_check(test_1_ptr->roots[1], test_root_2))
         {
-            printf("%i test two roots type OK\n", NUMBER_OF_TESTS_cp); return;
+            printf("%i test two roots type OK\n", NUMBER_OF_TESTS); return;
         }
     }
     if (test_1_ptr->number_of_roots == INF_ROOTS)
     {
         if (test_1_ptr->number_of_roots == test_number_of_roots)
         {
-            printf("%i test inf roots type OK\n",NUMBER_OF_TESTS_cp); return;
+            printf("%i test inf roots type OK\n", NUMBER_OF_TESTS); return;
         }
     }
 
