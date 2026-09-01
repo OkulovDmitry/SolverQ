@@ -1,3 +1,5 @@
+# Enter test in format: coeff_1, coeff_2, coeff 3, root_1, root_2, number_of_roots
+# If there is no solution, enter NAN.
 # D>0
 1 -5 6 2 3 TWO_ROOTS # TEST 1
 1 -2 -3 -1 3 TWO_ROOTS # TEST 2
